@@ -41,7 +41,7 @@ body{
     #000
   );
   position: absolute;
-  bottom: 0;
+  bottom: 8rem;
   left: 0;
   width: 100%;
   padding: 4rem, 1rem, 2rem, 1rem;
@@ -87,7 +87,7 @@ p{
 .dots{
   position: absolute;
   color: #fff;
-  bottom: 2rem;
+  bottom: 6rem;
   left: 0;
   gap: 1rem;
   width: 100%;
