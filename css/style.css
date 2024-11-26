@@ -19,13 +19,20 @@ body{
   min-height: 30rem;
   height: 100vh;
   position: relative;
-  background-image: url(../media/img1.jpg);
-  
+  background-image: url(../media/img1.jpg); 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   perspective: 1000px;
-  transition: 0.5s;
+  transition: 0.3s;
+}
+
+.gallery.fade-out {
+  opacity: .5;
+}
+
+.gallery.fade-in {
+  opacity: 1;
 }
 
 .caption{

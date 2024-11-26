@@ -1,74 +1,81 @@
-let slider = document.querySelector(".gallery");
-let left = document.querySelector(".left");
-let right = document.querySelector(".right");
-let heading = document.querySelector(".caption h1");
-let caption = document.querySelector(".caption p");
-let images = ["img1.jpg", "img2.jpg", "img3.jpg", "img4.jpg"];
-let headings = ["Moose", "Moose", "Elephant", "Tiger"];
-let captions = [
+const slider = document.querySelector(".gallery");
+const left = document.querySelector(".left");
+const right = document.querySelector(".right");
+const heading = document.querySelector(".caption h1");
+const caption = document.querySelector(".caption p");
+const dots = document.querySelectorAll(".dots li");
+
+const images = ["img1.jpg", "img2.jpg", "img3.jpg", "img4.jpg"];
+const headings = ["Moose", "Moose", "Elephant", "Tiger"];
+const captions = [
   "Canada, Alberta, Jasper National Park",
   "United States, Alaska, Denali National Park",
   "Africa, Congo, Serengeti National Park",
   "Africa, Kenya, Ngorongoro Crater",
 ];
-let dots = document.querySelectorAll(".dots li");
-let isPlaying = true;
+
+let currentIndex = 0;
 let intervalId;
+let isPlaying = true;
 let touchStartX = 0;
 let touchEndX = 0;
-let id = 0;
 
-// slide function
-function slide(id) {
-  slider.style.backgroundImage = `url(./media/${images[id]})`;
-  heading.innerText = headings[id];
-  caption.innerText = captions[id];
-  updateDots(id);
+// Helper function to update slide
+function slide(newIndex) {
+  if (newIndex === currentIndex) return;
+
+  // Add fade-out animation
+  slider.classList.remove("fade-in");
+  slider.classList.add("fade-out");
+
+  setTimeout(() => {
+    currentIndex = newIndex;
+    slider.style.backgroundImage = `url(./media/${images[currentIndex]})`;
+    heading.innerText = headings[currentIndex];
+    caption.innerText = captions[currentIndex];
+    updateDots(currentIndex);
+
+    // Add fade-in animation
+    slider.classList.remove("fade-out");
+    slider.classList.add("fade-in");
+  }, 300); 
 }
 
-// mouse click events
+// Update dots
+function updateDots(index) {
+  dots.forEach((dot, idx) => {
+    dot.classList.toggle("active", idx === index);
+  });
+}
+
+// Click events for navigation buttons
 left.addEventListener("click", () => {
-  id = (id - 1 + images.length) % images.length; 
-  slide(id);
+  slide((currentIndex - 1 + images.length) % images.length);
 });
 
 right.addEventListener("click", () => {
-  id = (id + 1) % images.length; 
-  slide(id);
+  slide((currentIndex + 1) % images.length);
 });
 
-// update dots function
-function updateDots(id) {
-  dots.forEach((dot, index) => {
-    dot.classList.toggle("active", index === id);
-  });
-}
-
+// Dot navigation
 dots.forEach((dot, index) => {
   dot.addEventListener("click", () => {
-    id = index;
-    slide(id);
+    slide(index);
   });
 });
 
-// phone swipe function with debounce
-let debounceTimeout;
+// Swipe functionality
 function handleSwipe() {
-  clearTimeout(debounceTimeout);
-  debounceTimeout = setTimeout(() => {
-    const swipeThreshold = 50;
-    const swipeDistance = touchEndX - touchStartX;
+  const swipeThreshold = 50;
+  const swipeDistance = touchEndX - touchStartX;
 
-    if (swipeDistance > swipeThreshold) {
-      id = (id - 1 + images.length) % images.length; 
-    } else if (swipeDistance < -swipeThreshold) {
-      id = (id + 1) % images.length; 
-    }
-    slide(id);
-  }, 100); 
+  if (swipeDistance > swipeThreshold) {
+    slide((currentIndex - 1 + images.length) % images.length);
+  } else if (swipeDistance < -swipeThreshold) {
+    slide((currentIndex + 1) % images.length);
+  }
 }
 
-// phone swipe events
 slider.addEventListener("touchstart", (e) => {
   touchStartX = e.changedTouches[0].screenX;
 });
@@ -78,11 +85,10 @@ slider.addEventListener("touchend", (e) => {
   handleSwipe();
 });
 
-// auto play slide
+// Auto-play functionality
 function startPlaying() {
   intervalId = setInterval(() => {
-    id = (id + 1) % images.length; 
-    slide(id);
+    slide((currentIndex + 1) % images.length);
   }, 3000);
 }
 
@@ -90,18 +96,20 @@ function stopPlaying() {
   clearInterval(intervalId);
 }
 
-function handleHover() {
-  if (isPlaying) {
-    stopPlaying();
-  } else {
-    startPlaying();
-  }
-  isPlaying = !isPlaying;
+// Pause auto-play on hover
+slider.addEventListener("mouseenter", () => {
+  if (isPlaying) stopPlaying();
+});
+
+slider.addEventListener("mouseleave", () => {
+  if (isPlaying) startPlaying();
+});
+
+// Initialize
+function init() {
+  slider.style.backgroundImage = `url(./media/${images[currentIndex]})`;
+  updateDots(currentIndex);
+  startPlaying();
 }
 
-slider.addEventListener("mouseenter", handleHover);
-slider.addEventListener("mouseleave", handleHover);
-
-// call functions when page loads
-startPlaying();
-updateDots(0);
+init();
