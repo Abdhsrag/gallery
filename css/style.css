@@ -116,9 +116,6 @@ p{
   .left,.right{
     display: none;
   }
-  .dots {
-    bottom: 1rem; 
-  }
 
   .dots li {
     width: 0.5rem; 
