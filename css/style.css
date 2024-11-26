@@ -84,23 +84,6 @@ p{
   right: 1rem;
 }
 
-.slide{
-  animation: imgFade .5s ease-in-out, imgSlide .75s ease-in-out;
-}
-
-
-
-@keyframes imgFade {
-  0% { opacity: 0; }
-  50% { opacity: .5; }
-  100% { opacity: 1; }
-}
-
-@keyframes imgSlide {
-  0% { transform: translateX(10px); }
-  100% { transform: translateX(0); }
-}
-
 .dots{
   position: absolute;
   color: #fff;
